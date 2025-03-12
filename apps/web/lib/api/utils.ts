@@ -7,7 +7,9 @@ import { DubApiError } from "./errors";
 
 export const parseRequestBody = async (req: Request) => {
   try {
-    return await req.json();
+    const body = await req.json();
+    console.log("body", body);
+    return body;
   } catch (e) {
     console.error(e);
     throw new DubApiError({
