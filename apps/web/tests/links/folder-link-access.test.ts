@@ -278,6 +278,8 @@ describe.concurrent("Folder access permissions", async () => {
       ],
     });
 
+    console.log(data);
+
     expect(status).toEqual(200);
     expect(data).toEqual([
       {
@@ -302,9 +304,7 @@ describe.concurrent("Folder access permissions", async () => {
       },
     });
 
-    if (status !== 200) {
-      console.log(data);
-    }
+    console.log(data);
 
     expect(status).toEqual(200);
     expect(data).toEqual([
@@ -325,6 +325,8 @@ describe.concurrent("Folder access permissions", async () => {
     const { status, data } = await http.delete({
       path: `/links/bulk?linkIds=${E2E_READ_ONLY_FOLDER_LINK_ID},${E2E_NO_ACCESS_FOLDER_LINK_ID}`,
     });
+
+    console.log(data);
 
     expect(status).toEqual(200);
     expect(data).toEqual({ deletedCount: 0 });
