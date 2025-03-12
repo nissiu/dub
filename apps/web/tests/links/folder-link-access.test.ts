@@ -302,6 +302,10 @@ describe.concurrent("Folder access permissions", async () => {
       },
     });
 
+    if (status !== 200) {
+      console.log(data);
+    }
+
     expect(status).toEqual(200);
     expect(data).toEqual([
       {
