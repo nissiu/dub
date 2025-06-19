@@ -129,7 +129,13 @@ export async function GET(req: Request) {
     const partnerProgramsChunks = chunk(partnerPrograms, 100);
     const connectPayoutsLastRemindedAt = new Date();
 
+    console.log(
+      `Found ${partnerPrograms.length} partners with pending payouts.`,
+    );
+
     for (const partnerProgramsChunk of partnerProgramsChunks) {
+      const resendStartTime = Date.now();
+
       await resend.batch.send(
         partnerProgramsChunk.map(({ partner, programs }) => ({
           from: VARIANT_TO_FROM_MAP.notifications,
@@ -143,7 +149,14 @@ export async function GET(req: Request) {
         })),
       );
 
-      console.info(partnerProgramsChunk);
+      const resendEndTime = Date.now();
+      const resendDuration = resendEndTime - resendStartTime;
+
+      console.info(
+        `Sending reminders to ${partnerProgramsChunk.length} partners took ${resendDuration}ms.`,
+      );
+
+      const dbUpdateStartTime = Date.now();
 
       await prisma.partner.updateMany({
         where: {
@@ -155,6 +168,13 @@ export async function GET(req: Request) {
           connectPayoutsLastRemindedAt,
         },
       });
+
+      const dbUpdateEndTime = Date.now();
+      const dbUpdateDuration = dbUpdateEndTime - dbUpdateStartTime;
+
+      console.info(
+        `Database update for ${partnerProgramsChunk.length} partners took ${dbUpdateDuration}ms.`,
+      );
     }
 
     return NextResponse.json("OK");
