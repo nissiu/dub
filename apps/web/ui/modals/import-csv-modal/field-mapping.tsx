@@ -108,6 +108,17 @@ function FieldRow({
           });
         });
         break;
+      case "expiresAt":
+        // Convert to date
+        values = values.map((e) => {
+          const date = parseDateTime(e);
+          if (!date) return e;
+
+          return formatDate(date, {
+            month: "short",
+          });
+        });
+        break;
     }
 
     values = values.map((e) => truncate(e, 32) as string);
