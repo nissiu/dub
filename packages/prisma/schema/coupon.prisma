@@ -4,16 +4,15 @@ enum CouponStructure {
 }
 
 model Coupon {
-  id           String          @id @default(cuid())
-  programId    String
-  couponId     String?
-  couponTestId String?
-  name         String
-  amount       Int
-  type         CouponStructure
-  maxDuration  Int? // in months (0 -> one-time, null -> forever)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id          String          @id @default(cuid())
+  programId   String
+  couponId    String
+  name        String
+  amount      Int
+  type        CouponStructure
+  maxDuration Int? // in months (0 -> one-time, null -> forever)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   couponCodes CouponCode[]
   program     Program      @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -22,10 +21,10 @@ model Coupon {
 }
 
 model CouponCode {
-  id        String   @id @default(cuid())
- 
+  id String @id @default(cuid())
+
   // programId    String
-   // partnerId String
+  // partnerId String
   couponId  String
   code      String
   createdAt DateTime @default(now())
