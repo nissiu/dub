@@ -1,0 +1,24 @@
+enum CouponStructure {
+  percentage
+  flat
+}
+
+enum CouponProvider {
+  stripe
+}
+
+model Coupon {
+  id          String          @id @default(cuid())
+  programId   String
+  provider    CouponProvider  @default(stripe)
+  name        String
+  amount      Int
+  type        CouponStructure
+  maxDuration Int? // in months (0 -> one-time, null -> forever)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index(programId)
+}

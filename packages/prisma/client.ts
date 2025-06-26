@@ -3,6 +3,7 @@ export * from "@prisma/client";
 export {
   CommissionStatus,
   CommissionType,
+  CouponStructure,
   EventType,
   FolderType,
   FolderUserRole,
