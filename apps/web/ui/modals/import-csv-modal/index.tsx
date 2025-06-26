@@ -54,6 +54,10 @@ export const mappableFields = {
     label: "Tags",
     required: false,
   },
+  expiresAt: {
+    label: "Expires At",
+    required: false,
+  },
   createdAt: {
     label: "Created At",
     required: false,
