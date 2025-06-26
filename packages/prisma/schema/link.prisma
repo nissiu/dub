@@ -39,23 +39,23 @@ model Link {
   testCompletedAt DateTime? // When tests were or will be completed
 
   // User who created the link
-  user   User?   @relation(fields: [userId], references: [id])
   userId String?
 
   // Project that the link belongs to
-  project   Project? @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   projectId String?
 
-  // Program that the link belongs to
-  programId String?
-
   folderId String?
-  folder   Folder? @relation(fields: [folderId], references: [id], onUpdate: Cascade, onDelete: SetNull)
 
   // External & tenant IDs (for API usage + multi-tenancy)
   externalId String?
   tenantId   String?
 
+  // Dub Partner specific fields
+  programId    String?
+  partnerId    String?
+  couponCodeId String?
+
+  comments    String?   @db.Text // Comments on the particular shortlink
   publicStats Boolean   @default(false) // whether to show public stats or not
   clicks      Int       @default(0) // number of clicks
   lastClicked DateTime? // when the link was last clicked
@@ -65,22 +65,17 @@ model Link {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  // Link tags
-  tags LinkTag[]
-
-  // Link webhooks
-  webhooks LinkWebhook[]
-
-  // Comments on the particular shortlink
-  comments String? @db.Text
-
+  tags              LinkTag[]
+  webhooks          LinkWebhook[]
   dashboard         Dashboard?
-  partnerId         String?
+  customers         Customer[]
+  commissions       Commission[]
+  user              User?              @relation(fields: [userId], references: [id])
+  program           Program?           @relation(fields: [programId], references: [id])
   programEnrollment ProgramEnrollment? @relation(fields: [programId, partnerId], references: [programId, partnerId])
-
-  program     Program?     @relation(fields: [programId], references: [id])
-  customers   Customer[]
-  commissions Commission[]
+  project           Project?           @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  folder            Folder?            @relation(fields: [folderId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  couponCode        CouponCode?        @relation(fields: [couponCodeId], references: [id])
 
   @@unique([domain, key]) // for getting a link by domain and key
   @@unique([projectId, externalId]) // for getting a link by externalId
@@ -91,4 +86,5 @@ model Link {
   @@index([domain, createdAt]) // for bulk link deletion workflows (by domain)
   @@index(folderId) // used in /api/folders
   @@index(userId) // for relation to User table, used in /api/cron/cleanup too
+  @@index(couponCodeId)
 }
