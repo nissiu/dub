@@ -45,6 +45,7 @@ interface MapperResult {
     description?: string;
     tags?: string[];
     createdAt?: Date;
+    expiresAt?: Date;
   };
 }
 
@@ -219,6 +220,18 @@ const mapCsvRowToLink = (
       }
     }
 
+    if (mapping.expiresAt) {
+      const expiresAt = getValueByKey(mapping.expiresAt);
+
+      if (expiresAt) {
+        const date = parseDateTime(expiresAt);
+
+        if (date) {
+          link.expiresAt = date;
+        }
+      }
+    }
+
     if (mapping.tags) {
       const tags = getValueByKey(mapping.tags);
 
@@ -388,11 +401,13 @@ const processMappedLinks = async ({
   });
 
   const processedLinks = await Promise.all(
-    linksToCreate.map(({ tags, ...link }) =>
+    linksToCreate.map(({ tags, expiresAt, createdAt, ...link }) =>
       processLink({
         payload: {
           ...createLinkBodySchema.parse({
             ...link,
+            ...(expiresAt && { expiresAt: expiresAt.toISOString() }),
+            ...(createdAt && { createdAt: createdAt.toISOString() }),
             tagNames: tags || [],
             folderId,
           }),
