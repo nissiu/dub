@@ -200,6 +200,33 @@ export async function checkoutSessionCompleted(event: Stripe.Event) {
     );
 
     linkId = leadEvent.link_id;
+  } else if (charge.discounts && charge.discounts.length > 0) {
+    // TODO:
+    // We might want to check all discounts in the array
+
+    const discount = charge.discounts[0];
+    const promotionCode = discount.promotion_code as string;
+
+    if (!promotionCode) {
+      return "Promotion code not found, skipping...";
+    }
+
+    const couponCode = await prisma.couponCode.findFirst({
+      where: {
+        code: promotionCode,
+      },
+      include: {
+        links: true,
+      },
+    });
+
+    if (!couponCode) {
+      return `Promotion code ${promotionCode} not found in Dub, skipping...`;
+    }
+
+    // TODO:
+    // Implement coupon code based tracking
+    return "";
   } else {
     return "No dubCustomerId or stripeCustomerId found in Stripe checkout session metadata, skipping...";
   }

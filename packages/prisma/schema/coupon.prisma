@@ -26,7 +26,7 @@ model CouponCode {
   // programId    String
   // partnerId String
   couponId  String
-  code      String
+  code      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
