@@ -15,7 +15,20 @@ model Coupon {
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
 
-  program Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  program     Program      @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // couponCodes CouponCode[]
 
   @@index(programId)
 }
+
+// model CouponCode {
+//   id        String   @id @default(cuid())
+//   couponId  String
+//   code      String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+//   @@index(couponId)
+// }
