@@ -7,4 +7,5 @@ export const linkMappingSchema = z.object({
   tags: z.string().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
+  expiresAt: z.string().optional(),
 });
